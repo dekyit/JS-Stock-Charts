@@ -10,7 +10,31 @@ async function main() {
     
     const response = await fetch(endpoint)
     const data = await response.json()
-    
+
+    function getColor(stock){
+        if(stock === "GME"){
+            return 'rgba(61, 161, 61, 0.7)'
+        }
+        if(stock === "MSFT"){
+            return 'rgba(209, 4, 25, 0.7)'
+        }
+        if(stock === "DIS"){
+            return 'rgba(18, 4, 209, 0.7)'
+        }
+        if(stock === "BNTX"){
+            return 'rgba(166, 43, 158, 0.7)'
+        }
+    }
+
+    function getHighest(values){
+        let highest = 0
+        values.forEach(value =>{
+            if (value.high > highest){
+                highest = value.high 
+            } 
+        }) 
+        return highest
+    }
 
     let GME = data.GME
     let MSFT = data.MSFT
@@ -33,24 +57,26 @@ async function main() {
             }))
         },
     });
+ 
+    new Chart(highestPriceChartCanvas.getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: stocks.map(stock => stock.meta.symbol),
+            datasets: [{
+                label: 'Highest',
+                data: stocks.map(stock=> (getHighest(stock.values)
+                )),
+                backgroundColor: stocks.map(stock=> (getColor(stock.meta.symbol)
+                )),
+                borderColor: stocks.map(stock=> (getColor(stock.meta.symbol)
+                ))
+            }]
+        }
+    });
+    
+ 
 
-    function getColor(stock){
-        if(stock === "GME"){
-            return 'rgba(61, 161, 61, 0.7)'
-        }
-        if(stock === "MSFT"){
-            return 'rgba(209, 4, 25, 0.7)'
-        }
-        if(stock === "DIS"){
-            return 'rgba(18, 4, 209, 0.7)'
-        }
-        if(stock === "BNTX"){
-            return 'rgba(166, 43, 158, 0.7)'
-        }
-    }
-    
-    
-    console.log(stocks[0])
+    // console.log(stocks[0])
 }
 
 
